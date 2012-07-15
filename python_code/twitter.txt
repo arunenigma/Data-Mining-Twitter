@@ -1,0 +1,28 @@
+Access level
+Read-only 
+About the application permission model
+Consumer key
+fPnTbRpK2l6vIPw9agJA
+Consumer secret
+RJdDoZ4ZTvSi4AggFV0OjSqkh9Z9i4AtS80QD2xb4
+Request token URL
+https://api.twitter.com/oauth/request_token
+Authorize URL
+https://api.twitter.com/oauth/authorize
+Access token URL
+https://api.twitter.com/oauth/access_token
+Callback URL
+None
+Access token: *
+16886084-QFG6SZlNQPcnYYgYLkGJ59BIlvFvPDaUcUZJX9Rac
+Access token secret: *
+gH4guvxuiQZkIluhBhnwyGMlFUG3AtbFKEbjJOads
+Remember this should not be shared.
+
+
+
+
+
+
+
+PIN : 3323946 (a new PIN is generated each time you authenticate)

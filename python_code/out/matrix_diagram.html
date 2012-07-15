@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title>Protovis Matrix Diagram Example</title>
+    <script type="text/javascript" src="protovis-3.2/protovis-r3.2.js"></script>
+  </head>
+  <body>
+    <script type="text/javascript+protovis">
+
+        var graph = {"nodes": [{"nodeName": "J\u00e1 renovadas: Fringe, Raising Hope, The Good Wife, Smash, Grimm, New Girl, American Dad, The Cleveland Show, Blue Bloods, Family Guy +"}, {"nodeName": "RT @betobenitesb: J\u00e1 renovadas: Fringe, Raising Hope, The Good Wife, Smash, Grimm, New Girl, American Dad, The Cleveland Show, Blue Bloods, Family Guy +"}, {"nodeName": "RT @HURDLES_03: \u201c@FlyDopeThreads @HURDLES_03 Tomorrow @ 6:00 Tweet Shade216 New Song ( #95Bulls ) For A Trending Topic. Help Support Cleveland #Retweet\u201d"}, {"nodeName": "\u201c@FlyDopeThreads @HURDLES_03 Tomorrow @ 6:00 Tweet Shade216 New Song ( #95Bulls ) For A Trending Topic. Help Support Cleveland #Retweet\u201d"}, {"nodeName": "RT @Mariesaaa_R: Cleveland is bougie &lt;&lt;&lt; Cincinnati"}, {"nodeName": "Cleveland weather right now&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;"}, {"nodeName": "American dad &gt; Family guy &gt; the Cleveland show"}, {"nodeName": "Pharmacy Jobs $$ Medical Drug Management Nurse Reviewer (RN)12-027 at Medical Mutual of Ohio (Cleveland, OH)  http://t.co/jiCfcmXp"}, {"nodeName": "Pharmacy Jobs $$ Medical Drug Management Nurse Reviewer (RN)12-027 at Medical Mutual of Ohio (Cleveland, OH)  http://t.co/rc3a2WaY"}], "links": [{"source": 0, "target": 1, "value": 0.409200852110152}, {"source": 2, "target": 3, "value": 0.85828343670117491}, {"source": 4, "target": 5, "value": 1.5105963143366163}, {"source": 6, "target": 5, "value": 1.0985470970780564}, {"source": 7, "target": 8, "value": 1.6637924731264475}, {"source": 5, "target": 4, "value": 1.5105963143366163}, {"source": 5, "target": 6, "value": 1.0985470970780564}, {"source": 8, "target": 7, "value": 1.6637924731264475}, {"source": 1, "target": 0, "value": 0.409200852110152}, {"source": 3, "target": 2, "value": 0.85828343670117491}]}; // Substituted from Python 
+
+        var maxLinkValue = Math.max.apply(Math, graph.links.map(function(l) {return l.value}));
+        var colorBlender = pv.ramp("#eee", "black");
+
+        var color = pv.Colors.category20().by(function(d) d.group);
+
+        var vis = new pv.Panel()
+            .width(1000)
+            .height(1000)
+            .top(600)
+            .left(600);
+
+        var layout = vis.add(pv.Layout.Matrix)
+            .nodes(graph.nodes)
+            .links(graph.links)
+            .sort(function(a, b) b.group - a.group);
+
+        layout.link.add(pv.Bar)
+            .fillStyle(function(l) colorBlender(l.linkValue/maxLinkValue))
+            .antialias(false)
+            .title(function(l) l.linkValue)
+            .lineWidth(1);
+
+        layout.label.add(pv.Label)
+            .event("click", function(d) window.open(d.nodeUrl))
+
+            .textStyle(color);
+
+        vis.render();
+
+    </script>
+  </body>
+</html>

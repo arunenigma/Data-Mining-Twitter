@@ -1,0 +1,102 @@
+# MINING, ANALYZING AND VISUALIZING TWITTER DATA
+# Author : Arunprasath Shankar
+# axs918@case.edu
+# -*- -------------------------------------- -*-
+import pylab
+import json
+import twitter
+import cPickle
+import nltk
+import re
+import networkx as nx
+import graphplot
+import graphutils
+twitter_api = twitter.Twitter(domain = "api.twitter.com",api_version = '1')
+WORLD_WOE_ID = 1
+world_trends = twitter_api.trends._(WORLD_WOE_ID)
+trends = [trend for trend in world_trends()[0]['trends']]
+print
+print
+print 'TWITTER TRENDING TOPIC '
+#print trends
+for t in trends:
+	print str(t)
+print
+print
+# Paging through Twitter search results
+print 'TWITTER SEARCH RESULTS FOR THE QUERY "obama"'
+print
+search_results = []
+for page in (1,6):
+	search_results.append(twitter_api.search(q='obama',rpp=100,page=page))
+print search_results
+print
+print
+print json.dumps(search_results,sort_keys=True,indent=1)
+tweets = [r['text'] \
+	for result in search_results \
+		for r in result['results']]
+print 'TWEETS FOR THE QUERY ""'
+#print tweets
+for t in tweets:
+	print t
+print
+print
+words = []
+for t in tweets:
+	words+=[w for w in t.split()]
+#print words
+for w in words:
+	print w
+print
+print
+print 'total words=',len(words) # total words
+print 'unique words=',len(set(words)) # unique words
+lex_div = 1.0 * len(set(words))/len(words) # lexical diversity
+print 'Lexical Diversity = ',lex_div
+avg_words = 1.0 * sum([len(t.split()) for t in tweets])/len(tweets) # Average words per tweets
+print 'Average Words = ',avg_words
+# Pickling data
+f = open("/Users/arunprasathshankar/Desktop/finproj/dm/dmpcode/python_code/myData.pickle",'wb')
+
+
+cPickle.dump(words,f)
+f.close()
+# Using NLTK to perform basic frequency analysis
+words = cPickle.load(open('/Users/arunprasathshankar/Desktop/finproj/dm/dmpcode/python_code/myData.pickle'))
+freq_dist = nltk.FreqDist(words)
+print freq_dist.keys()[:50] # 50 most frequent tokens
+print freq_dist.keys()[-50:] # 50 least frequent tokens
+# Using re module(regular expressions to find retweets)
+
+
+rt_patterns = re.compile(r"(RT|via)((?:\b\W*@\w+)+)",re.IGNORECASE)
+for t in tweets:
+	print rt_patterns.findall(t)
+
+g = nx.DiGraph()
+all_tweets = [tweet for page in search_results for tweet in page["results"]]
+print all_tweets
+
+def get_rt_sources(tweet):
+	rt_patterns = re.compile(r"(RT|via)((?:\b\W*@\w+)+)",re.IGNORECASE)
+	return[source.strip() for tuple in rt_patterns.findall(tweet) for source in tuple if source not in ("RT","via")]
+
+for tweet in all_tweets:
+	rt_sources = get_rt_sources(tweet["text"])
+	if not rt_sources: continue
+	for rt_source in rt_sources:
+		g.add_edge(rt_source,tweet["from_user"],{"tweet_id":tweet["id"]})
+print g.number_of_nodes()
+print g.number_of_edges()
+print g.edges(data=True)[0]
+
+print len(nx.connected_components(g.to_undirected()))
+
+print nx.degree_histogram(g)
+graphplot.save_histogram(g,"/Users/arunprasathshankar/Desktop/arun.png")
+graphutils.show_graph(g)
+
+
+
+

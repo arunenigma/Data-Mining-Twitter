@@ -1,0 +1,4 @@
+install redis-server
+
+to run redis server
+$ redis-server
